@@ -6,6 +6,7 @@ import './Chat.css'
 import InfoBar from '../InfoBar/InfoBar'
 import Input from '../Input/Input'
 import Messages from '../Messages/Messages'
+import TextContainer from '../TextContainer/TextContainer'
 
 let socket;
 
@@ -14,6 +15,7 @@ const Chat = ({location}) => {
     const [room, setRoom] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
+    const [users, setUsers] = useState([])
     const ENDPOINT = 'localhost:5000'
 
     useEffect(() => {
@@ -37,7 +39,10 @@ const Chat = ({location}) => {
         socket.on('message', (message) => {
             setMessages([...messages, message]);
         })
-    }, [messages])
+        socket.on("roomData", ({ users }) => {
+            setUsers(users);
+          });
+    }, [messages, users])
 
     const sendMessage = (event) => {
 
@@ -63,6 +68,7 @@ const Chat = ({location}) => {
                     onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null} 
                 /> */}
             </div>
+            <TextContainer users={users}/>
         </div>
     )
 }
